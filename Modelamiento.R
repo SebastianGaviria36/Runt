@@ -1,67 +1,23 @@
 datos <- readRDS("datos.Rds")
 
 #TRAIN Y TEST
-train <- subset(datos, subset = 2012 <= datos$Ano & datos$Ano <= 2016 )
-test <- subset(datos, subset = datos$Ano == 2017)
+train <- subset(datos, subset = 2012 <= datos$Ano & datos$Ano <= 2016 )[,-1]
+test <- subset(datos, subset = datos$Ano == 2017)[,-1]
 
-#RMSE FUNCTION
-rmse <- function(mod, tst = T){
-  if (tst){
-    pred <- predict(mod, test)
-    return(sqrt(mean((pred-test$Unidades)^2)))}
-  else{
-    pred <- predict(mod, train)
-    return(sqrt(mean((pred-train$Unidades)^2)))
-  }
+#Rsquared function
+eval_results <- function(true, predicted) {
+  SSE <- sum((predicted - true)^2)
+  SST <- sum((true - mean(true))^2)
+  R_square <- 1 - SSE / SST
+  print(SSE)
+  print(SST)
+  R_square
+  
 }
 
-#RLM ALL COVARIABLES
-mod1 <- lm(Unidades~Dia+Festivo+Mes+Semana+PIBanual+PIBpersona+TRM, data = train)
-summary(mod1)
-rmse(mod1, tst = T)
-
-#RLM REMOVING PIB's and TRM
-mod2 <- lm(Unidades~Dia+Festivo+Mes+Semana+Ano, data = train)
-summary(mod2)
-rmse(mod2, tst = T)
-
-#RLM REMOVING Ano
-mod3 <- lm(Unidades~Dia+Festivo+Mes+Semana, data = train)
-summary(mod3)
-rmse(mod3, tst = T)
-
-#RLM REMOVING SEMANA
-mod4 <- lm(Unidades~Dia+Festivo+Mes+Ano, data = train)
-summary(mod4)
-rmse(mod4, tst = T)
-
-#RLM REMOVING MES
-mod5 <- lm(Unidades~Dia+Festivo+Semana+Ano, data = train)
-summary(mod5)
-rmse(mod5, tst = T)
-
-#Mod2 wins!
-
-#Generating combination of two numerical variables
-formulas <- c()
-for (i in 7:11) {
-  temp <- names(datos)[-2]
-  fixed <- paste(temp[c(1:6, 12, i)], collapse = " + ")
-  formulas[i-7] <- paste("Unidades", fixed, sep = " ~ ")
-}
-rm(list = c("i", "temp", "fixed"))
-
-
-rsq <- c()
-for (i in 1:length(formulas)){
-  mod <- lm(formulas[i], data = train)
-  rsq[i] <- summary(mod)$adj.r.squared
-}
-
-#BEST MODEL IS:
-formulas[which.max(rsq)]
-
-finalmod <- lm(Unidades ~ Fecha + Dia + Mes + Ano + Semana + Festivo + Inflacion_mensual + IPC,
-               data = train)
-summary(finalmod)
-rmse(finalmod, tst = F)
+#Todas las covariables
+modall <- lm(Unidades ~ ., data = train)
+#R squared (train)
+eval_results(train$Unidades, predict(modall))
+#R squared (test)
+eval_results(test$Unidades, predict(modall, newdata = test))
