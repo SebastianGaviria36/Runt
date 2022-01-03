@@ -1,59 +1,62 @@
-library(tidyverse)
-library(lubridate)
-library(magrittr)
-library(rjson)
-
-datos <- readxl::read_xlsx("registros_autos_entrenamiento.xlsx")
-
-json <- fromJSON(file = "holidays.json")
-fechas <- c()
-
-for (i in 1:length(json$table)) {
-  fechas[i] <-
-    format(as.Date(json$table[[i]]$holiday), "%Y-%m-%d")
-}
-fechas <- as.Date(fechas)
-
-datos %<>%
-  mutate(
-    Fecha = as.Date(Fecha),
-    Dia = wday(Fecha, label = T),
-    Mes = month(Fecha, label = T),
-    Ano = year(Fecha),
-    Semana = week(Fecha),
-    Festivo = factor(if_else(Fecha %in% fechas, "Si", "No"))
-  )
-
-datosPIB <- readxl::read_xlsx("DatosPIB.xlsx")
-
-datos <- inner_join(datos, datosPIB, by = "Ano")
-
-#Agregando TRM del dolar
-dolar <- readxl::read_xlsx("1.1.1.TCM_Serie_historica_IQY.xlsx",
-                           range = "A8:B11004") %>% 
-  mutate(Fecha = as.Date(Fecha)) %>% 
-  filter(between(year(Fecha), 2012, 2017))
-
-datos <- inner_join(datos, dolar)
-
-#Agregando salario minimo
-minimo <- read_xlsx("1.1.1.SLR_Serie_historica_IQY.xlsx")
-
-datos <- inner_join(datos, minimo)
-
-#Agregando IPC e inflacion mensual
-ipc <- read_xlsx("1.2.5.IPC_Serie_variaciones.xlsx", 
-                 range = "A13:E822") %>% 
-  mutate(Ano = as.character(Ano),
-         Mes = as.numeric(substr(Ano, 5, 6)),
-         Ano = as.numeric(substr(Ano, 1, 4))) %>% 
-  select(Ano, Mes, IPC, Inflacion_mensual) %>% 
-  filter(between(Ano, 2012, 2017))
-
-#NOTAS: Inflación mensual melita, el resto es pure trash
-meses <- unique(datos$Mes)
-ipc$Mes <- meses[ipc$Mes]
-f <- inner_join(datos, ipc, by = c("Ano" = "Ano", "Mes" = "Mes"))
+# library(tidyverse)
+# library(lubridate)
+# library(magrittr)
+# library(rjson)
+# 
+# datos <- readxl::read_xlsx("registros_autos_entrenamiento.xlsx")
+# 
+# json <- fromJSON(file = "holidays.json")
+# fechas <- c()
+# 
+# for (i in 1:length(json$table)) {
+#   fechas[i] <-
+#     format(as.Date(json$table[[i]]$holiday), "%Y-%m-%d")
+# }
+# fechas <- as.Date(fechas)
+# 
+# datos %<>%
+#   mutate(
+#     Fecha = as.Date(Fecha),
+#     Dia = wday(Fecha, label = T),
+#     Mes = month(Fecha, label = T),
+#     Ano = year(Fecha),
+#     Semana = week(Fecha),
+#     Festivo = factor(if_else(Fecha %in% fechas, "Si", "No"))
+#   )
+# 
+# datosPIB <- readxl::read_xlsx("DatosPIB.xlsx")
+# 
+# datos <- inner_join(datos, datosPIB, by = "Ano")
+# 
+# #Agregando TRM del dolar
+# 
+# dolar <- readxl::read_xlsx("1.1.1.TCM_Serie_historica_IQY.xlsx",
+#                            range = "A8:B11004") %>% 
+#   mutate(Fecha = as.Date(Fecha)) %>% 
+#   filter(between(year(Fecha), 2012, 2017))
+# 
+# datos <- inner_join(datos, dolar, by = "Fecha")
+# 
+# #Agregando salario minimo
+# datos <- readRDS("datos.Rds")
+# minimo <- readxl::read_xlsx("1.1.1.SLR_Serie_historica_IQY.xlsx")
+# 
+# datos <- inner_join(datos, minimo, by = "Ano")
+# 
+# #Agregando IPC e inflacion mensual
+# ipc <- readxl::read_xlsx("1.2.5.IPC_Serie_variaciones.xlsx", 
+#                  range = "A13:E822") %>% 
+#   mutate(Ano = as.character(Ano),
+#          Mes = as.numeric(substr(Ano, 5, 6)),
+#          Ano = as.numeric(substr(Ano, 1, 4))) %>% 
+#   select(Ano, Mes, IPC, Inflacion_mensual) %>% 
+#   filter(between(Ano, 2012, 2017))
+# 
+# #NOTAS: Inflación mensual melita, el resto es pure trash
+# meses <- unique(datos$Mes)
+# ipc$Mes <- meses[ipc$Mes]
+# datos <- inner_join(datos, ipc, by = c("Ano" = "Ano", "Mes" = "Mes"))
+# saveRDS(datos, "datos.Rds")
 
 #Dia importa (a nivel global)
 ggplot(datos, aes(Dia, Unidades, fill = Dia)) +
