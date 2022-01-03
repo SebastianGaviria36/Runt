@@ -1,3 +1,5 @@
+datos <- readRDS("datos.Rds")
+
 #TRAIN Y TEST
 train <- subset(datos, subset = 2012 <= datos$Ano & datos$Ano <= 2016 )
 test <- subset(datos, subset = datos$Ano == 2017)
@@ -39,4 +41,14 @@ summary(mod5)
 rmse(mod5, tst = T)
 
 #Mod2 wins!
+
+#Generating combination of two numerical variables
+
+formulas <- c()
+for (i in 7:11) {
+  temp <- names(datos)[-2]
+  fixed <- paste(temp[c(1:6, 12, i)], collapse = " + ")
+  formulas[i-7] <- paste("Unidades", fixed, sep = " ~ ")
+}
+rm(list = c("i", "temp", "fixed"))
 
