@@ -43,7 +43,6 @@ rmse(mod5, tst = T)
 #Mod2 wins!
 
 #Generating combination of two numerical variables
-
 formulas <- c()
 for (i in 7:11) {
   temp <- names(datos)[-2]
@@ -52,3 +51,17 @@ for (i in 7:11) {
 }
 rm(list = c("i", "temp", "fixed"))
 
+
+rsq <- c()
+for (i in 1:length(formulas)){
+  mod <- lm(formulas[i], data = train)
+  rsq[i] <- summary(mod)$adj.r.squared
+}
+
+#BEST MODEL IS:
+formulas[which.max(rsq)]
+
+finalmod <- lm(Unidades ~ Fecha + Dia + Mes + Ano + Semana + Festivo + Inflacion_mensual + IPC,
+               data = train)
+summary(finalmod)
+rmse(finalmod, tst = F)
