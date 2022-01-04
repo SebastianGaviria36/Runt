@@ -68,8 +68,9 @@ for (i in 7:12) {
   datos_numpois[i-6,3] <- eval_results(test$Unidades, predict(modtemp, newdata = test, type = "response"))
   datos_numpois[i-6,4] <- datos_num[i-6,2] - datos_num[i-6,3] 
 }
-
-#Todas las regresiones posibles (Poisson)
+################################################################################
+#POISSON
+#Todas las regresiones posibles
 counter <- 1
 datos_all_pois <- data.frame(Formula = "", R2_train = 0, R2_test = 0, dif = 0)
 for (i in 1:11) {
@@ -84,7 +85,7 @@ for (i in 1:11) {
     counter <- counter + 1
   }
 }
-rm(list = c("i", "j", "temp", "formula_temp", "mod_temp"))
+rm(list = c("i", "j", "temp", "formula_temp", "modtemp"))
 
 datos_all_pois <- datos_all_pois %>%
   mutate(dif = abs(R2_train - R2_test)) %>%
@@ -103,30 +104,48 @@ for (i in 2:nrow(datos_all_pois)) {
 best_formula #objective model (cumple el criterio del 10%)
 best_sum
 which.max(datos_all_pois[,1] == best_formula)
-saveRDS(best_formula, "formulapoiss.Rds")
+# saveRDS(best_formula, "formulapoiss.Rds")
 
 #Todas las regresiones posibles con regularizacion poisson (pendiente)
 
 counter <- 1
 datos_pois_reg <- data.frame(Formula = "", alpha = 0, lambda = 0, R2_train = 0, R2_test = 0, dif = 0)
-param_grid <- expand.grid(alpha = seq(0, 1, .01), lambda = 10^seq(-3, 2, length.out = 100))
+param_grid <- expand.grid(alpha = seq(0, 1, .05), lambda = 10^seq(-3, 2, length.out = 100))
 library(glmnet)
 library(caret)
-for (i in 1:11) {
+for (i in 2:11) {
   temp <- combn(names(train)[-1], i)
   for (j in 1:ncol(temp)) {
-    formula_temp <- paste("Unidades", paste(temp[,j], collapse = " + "), sep = " ~ ")
-    modtemp <- train(formula_temp, method = "glmnet", 
+    formula_temp <- paste("Unidades", paste(temp[,j], collapse = " + "), 
+                          sep = " ~ ")
+    modtemp <- train(as.formula(formula_temp), method = "glmnet", 
                      trControl = trainControl(method = "cv", number = 10),
                      tuneGrid = param_grid,
-                     family = "poisson")
+                     family = "poisson", 
+                     data = train)
     datos_pois_reg[counter, 2:3] <- modtemp$bestTune
     modtemp <- modtemp$finalModel
-    datos_all_pois[counter,1] <- formula_temp
-    datos_all_pois[counter,4] <- eval_results(train$Unidades, predict(modtemp, type = "response"))
-    datos_all_pois[counter,5] <- eval_results(test$Unidades, predict(modtemp, newdata = test, type = "response"))
-    datos_all_pois[counter,6] <- datos_all_pois[counter,2] - datos_all_pois[counter,3]
+    train_temp <- model.matrix(as.formula(formula_temp), data = train)[, -1]
+    print("Golazo 128")
+    test_temp <- model.matrix(as.formula(formula_temp), data = test)[, -1]
+    print("Golazo 130")
+    datos_pois_reg[counter,1] <- formula_temp
+    datos_pois_reg[counter,4] <- 
+      eval_results(train$Unidades, predict(modtemp, newx = train_temp,
+                                           s = datos_pois_reg[counter, 3],
+                                           type = "response"))
+    datos_pois_reg[counter,5] <- 
+      eval_results(train$Unidades, predict(modtemp, newx = test_temp,
+                                           s = datos_pois_reg[counter, 3],
+                                           type = "response"))
+    
+    datos_pois_reg[counter,6] <- 
+      datos_pois_reg[counter,4] - datos_pois_reg[counter,5]
     counter <- counter + 1
   }
 }
 
+
+################################################################################
+#GAMLSS
+lol <- gamlss::fitDist(datos$Unidades)
