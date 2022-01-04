@@ -58,6 +58,8 @@ ipc$Mes <- meses[ipc$Mes]
 datos <- inner_join(datos, ipc, by = c("Ano" = "Ano", "Mes" = "Mes"))
 saveRDS(datos, "datos.Rds")
 
+################################################################################
+#EDAED
 #Dia importa (a nivel global)
 ggplot(datos, aes(Dia, Unidades, fill = Dia)) +
   geom_col(position = position_stack()) +
