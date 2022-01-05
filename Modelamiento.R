@@ -113,6 +113,7 @@ datos_pois_reg <- data.frame(Formula = "", alpha = 0, lambda = 0, R2_train = 0, 
 param_grid <- expand.grid(alpha = seq(0, 1, .05), lambda = 10^seq(-3, 2, length.out = 100))
 library(glmnet)
 library(caret)
+t1 <- Sys.time()
 for (i in 2:11) {
   temp <- combn(names(train)[-1], i)
   for (j in 1:ncol(temp)) {
@@ -124,27 +125,28 @@ for (i in 2:11) {
                      family = "poisson", 
                      data = train)
     datos_pois_reg[counter, 2:3] <- modtemp$bestTune
-    modtemp <- modtemp$finalModel
     train_temp <- model.matrix(as.formula(formula_temp), data = train)[, -1]
-    print("Golazo 128")
     test_temp <- model.matrix(as.formula(formula_temp), data = test)[, -1]
-    print("Golazo 130")
+    modtemp <- modtemp$finalModel
     datos_pois_reg[counter,1] <- formula_temp
-    datos_pois_reg[counter,4] <- 
-      eval_results(train$Unidades, predict(modtemp, newx = train_temp,
-                                           s = datos_pois_reg[counter, 3],
-                                           type = "response"))
-    datos_pois_reg[counter,5] <- 
-      eval_results(train$Unidades, predict(modtemp, newx = test_temp,
-                                           s = datos_pois_reg[counter, 3],
-                                           type = "response"))
+    datos_pois_reg[counter,4] <- eval_results(train$Unidades, 
+                                              predict(modtemp,
+                                                      newx = train_temp, 
+                                                      s = modtemp$lambdaOpt,
+                                                      type = "response"))
+    datos_pois_reg[counter,5] <- eval_results(test$Unidades, 
+                                              predict(modtemp,
+                                                      newx = test_temp, 
+                                                      s = modtemp$lambdaOpt,
+                                                      type = "response"))
+
     
-    datos_pois_reg[counter,6] <- 
-      datos_pois_reg[counter,4] - datos_pois_reg[counter,5]
+    datos_pois_reg[counter,6] <- datos_pois_reg[counter,4] - datos_pois_reg[counter,5]
     counter <- counter + 1
   }
 }
-
+t2 <- Sys.time()
+print(paste("El tiempo que se demoró fue", t2-t1, sep = " "))
 
 ################################################################################
 #GAMLSS
