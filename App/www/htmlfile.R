@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+txt <- '<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -83,4 +83,4 @@
         <script src="slider.js"></script>
 </body>
 
-</html>
+</html>'

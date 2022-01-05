@@ -1,7 +1,8 @@
 library(shiny)
-
+source("./www/htmlfile.R")
 Ui <- fluidPage(
     titlePanel("Titulo provisional"),
+    includeCSS("./www/styles.css"),
     sidebarLayout(
         sidebarPanel(
             selectInput(
@@ -54,7 +55,7 @@ Ui <- fluidPage(
            ),
            conditionalPanel(
                condition = "input.visinput == 'Sobre los autores'",
-              includeHTML("./www/aboutus.html")
+               includeHTML("./www/intro.html")
            )
         )
     )
