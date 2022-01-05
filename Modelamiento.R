@@ -3,8 +3,7 @@ library(tidyverse)
 
 #TRAIN Y TEST
 train <- subset(datos, subset = 2012 <= datos$Ano & datos$Ano <= 2016 )[,-1]
-test <- subset(datos, subset = datos$Ano == 2017)[,-1] %>%
-  filter(Mes < "jul")
+test <- subset(datos, subset = datos$Ano == 2017)[,-1] 
 
 #Rsquared function
 eval_results <- function(true, predicted) {
@@ -106,7 +105,7 @@ best_sum
 which.max(datos_all_pois[,1] == best_formula)
 # saveRDS(best_formula, "formulapoiss.Rds")
 
-#Todas las regresiones posibles con regularizacion poisson (pendiente)
+#Todas las regresiones posibles con regularizacion poisson (fracaso)
 
 counter <- 1
 datos_pois_reg <- data.frame(Formula = "", alpha = 0, lambda = 0, R2_train = 0, R2_test = 0, dif = 0)
@@ -150,4 +149,74 @@ print(paste("El tiempo que se demoró fue", t2-t1, sep = " "))
 
 ################################################################################
 #GAMLSS
-lol <- gamlss::fitDist(datos$Unidades)
+#Mejores distribuciones
+library(gamlss)
+#dist_conteos <- gamlss::fitDist(datos$Unidades, type = "counts")
+#saveRDS(dist_conteos, "dist_conteos.Rds")
+readRDS("dist_conteos.Rds")
+
+#ZANBI(Por ahora, el mejor)
+zanbi <- gamlss(Unidades ~ Dia + Mes + Ano + Semana + Festivo, 
+                family = ZANBI(), data = train)
+pred_zanbi <- predict(zanbi, newdata = test, type = "response")
+eval_results(train$Unidades, round(fitted(zanbi)))
+eval_results(test$Unidades, round(pred_zanbi))
+
+#ZINBI
+zinbi <- gamlss(Unidades ~ Dia + Mes + Ano + Semana + Festivo, 
+                family = ZINBI(), data = train)
+pred_zinbi <- predict(zinbi, newdata = test, type = "response")
+eval_results(train$Unidades, round(fitted(zinbi)))
+eval_results(test$Unidades, round(pred_zinbi))
+
+#ZANBI con la mejor formula POISSON (Empeora)
+zanbi_pois <- gamlss(as.formula(formulapoiss), 
+                     family = ZANBI(), data = train)
+pred_zanbi_pois <- predict(zanbi_pois, newdata = test, type = "response")
+eval_results(train$Unidades, round(fitted(zanbi_pois)))
+eval_results(test$Unidades, round(pred_zanbi_pois))
+
+#ZIP
+zip <- gamlss(Unidades ~ Dia + Mes + Ano + Semana + Festivo,
+              family = ZIP(), data = train)
+pred_zip <- predict(zip, newdata = test, type = "response")
+eval_results(train$Unidades, round(fitted(zip)))
+eval_results(test$Unidades, round(pred_zip))
+
+#GEOM(A tener en cuenta)
+geom <- gamlss(Unidades ~ Dia + Mes + Ano + Semana + Festivo,
+               family = GEOM(), data = train)
+pred_geom <- predict(geom, newdata = test, type = "response")
+eval_results(train$Unidades, round(fitted(geom)))
+eval_results(test$Unidades, round(pred_geom))
+
+#DPO
+dpo <- gamlss(Unidades ~ Dia + Mes + Ano + Semana + Festivo, 
+              family = DPO(), data = train)
+
+#############################################################################
+#KNN
+library(caret)
+knn_reg <- train(Unidades ~ Dia + Mes + Ano + Semana + Festivo,
+                 method = "knn",
+                 data = train)
+pred_knn <- predict(knn_reg, newdata = test)
+eval_results(train$Unidades, round(fitted(knn_reg)))
+eval_results(test$Unidades, round(pred_knn))
+
+ctrl_rf <- trainControl(method = "LGOCV", 
+                        number = 10,
+                        p = 0.2,
+                        )
+
+rf <- train(Unidades ~ Dia + Mes + Ano + Semana + Festivo,
+            method = "rf",
+            data = train)
+pred_rf <- predict(rf, newdata = test)
+eval_results(train$Unidades, round(fitted(rf)))
+eval_results(test$Unidades, round(pred_rf))
+
+
+
+
+
