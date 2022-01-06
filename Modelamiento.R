@@ -220,21 +220,37 @@ eval_results(test$Unidades, round(pred_rf))
 #DATA GENERATING FUNCTION
 
 gendata <- function(modelo){
-  predicted <- predict(modelo, newdata = train, type = "response")
-  reals <- train$Unidades
-  label <- factor(c(rep("real",length(reals)), rep("predicho",length(reals))))
-  dates <- subset(datos, subset = 2012 <= datos$Ano & datos$Ano <= 2016 )[,1]
+  predicted1 <- predict(modelo, newdata = train, type = "response")
+  reals1 <- train$Unidades
+  label1 <- factor(c(rep("real",length(reals1)), rep("predicho",length(reals1))))
+  dates1 <- subset(datos, subset = 2012 <= datos$Ano & datos$Ano <= 2016 )[,1]
+  
+  predicted2 <- predict(modelo, newdata = test, type = "response")
+  reals2 <- test$Unidades
+  label2 <- factor(c(rep("real",length(reals2)), rep("predicho",length(reals2))))
+  dates2 <- subset(datos, subset = datos$Ano == 2017)[,1]
   
   
-  frame <- data.frame(Fecha = c(dates,dates),
-                      Valor = c(reals, predicted),
-                      Clase = label,
-                      Dia = c(wday(dates),wday(dates)),
-                      Semana = c(week(dates),week(dates)),
-                      Mes = c(month(dates),month(dates)),
-                      Ano = c(year(dates),year(dates)))
+  frame1 <- data.frame(Fecha = c(dates1,dates1),
+                      Valor = c(reals1, predicted1),
+                      Clase = label1,
+                      Dia = c(wday(dates1),wday(dates1)),
+                      Semana = c(week(dates1),week(dates1)),
+                      Mes = c(month(dates1),month(dates1)),
+                      Ano = c(year(dates1),year(dates1)))
   
-  write.csv(frame, "predata.csv")
+  frame2 <- data.frame(Fecha = c(dates2,dates2),
+                       Valor = c(reals2, predicted2),
+                       Clase = label2,
+                       Dia = c(wday(dates2),wday(dates2)),
+                       Semana = c(week(dates2),week(dates2)),
+                       Mes = c(month(dates2),month(dates2)),
+                       Ano = c(year(dates2),year(dates2)))
+
+  
+  write.csv(frame1, "predtrain.csv")
+  write.csv(frame2, "predtest.csv")
+  
  }
 
 gendata(zinbi)
