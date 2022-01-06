@@ -194,8 +194,7 @@ eval_results(test$Unidades, round(pred_geom))
 dpo <- gamlss(Unidades ~ Dia + Mes + Ano + Semana + Festivo, 
               family = DPO(), data = train)
 
-#############################################################################
-#KNN
+############################RF#####################
 library(caret)
 knn_reg <- train(Unidades ~ Dia + Mes + Ano + Semana + Festivo,
                  method = "knn",
@@ -216,7 +215,26 @@ pred_rf <- predict(rf, newdata = test)
 eval_results(train$Unidades, round(fitted(rf)))
 eval_results(test$Unidades, round(pred_rf))
 
+########FINISHES MODELING STAGE (FOR NOW)###################
 
+#DATA GENERATING FUNCTION
 
+gendata <- function(modelo){
+  predicted <- predict(modelo, newdata = train, type = "response")
+  reals <- train$Unidades
+  label <- factor(c(rep("real",length(reals)), rep("predicho",length(reals))))
+  dates <- subset(datos, subset = 2012 <= datos$Ano & datos$Ano <= 2016 )[,1]
+  
+  
+  frame <- data.frame(Fecha = c(dates,dates),
+                      Valor = c(reals, predicted),
+                      Clase = label,
+                      Dia = c(wday(dates),wday(dates)),
+                      Semana = c(week(dates),week(dates)),
+                      Mes = c(month(dates),month(dates)),
+                      Ano = c(year(dates),year(dates)))
+  
+  write.csv(frame, "predata.csv")
+ }
 
-
+gendata(zinbi)
