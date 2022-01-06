@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends "base.html" %}
 
-<head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sliders</title>
-        <link rel="stylesheet" href="styles.css">
-</head>
+{% block head %} 
+<title>Acerca de nosotros</title>
+{% endblock %}
 
-<body>
+{% block body %}
+
         <section class="slider">
 
+
                 <div class="slider__container container">
-                        
-                        <img src="larrow.svg" class="slider__arrow" id="before">
+                        <h1>¡Cónocenos!</h1>  
+                        <img src="{{ url_for('static', filename='assets/larrow.svg')}}" class="slider__arrow" id="before">
 
                         <section class="slider__body slider__body--show" data-id="1">
                                 <div class="slider__texts">
@@ -76,11 +73,8 @@
                                 </figure>
                         </section>
 
-                        <img src="rarrow.svg" class="slider__arrow" id="after">
+                        <img src="{{ url_for('static', filename='assets/rarrow.svg')}}" class="slider__arrow" id="after">
                 </div>
         </section>
-
-        <script src="slider.js"></script>
-</body>
-
-</html>
+        <script src="./../static/js/slider.js"></script>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Predicciones</title>
+{% endblock %}
+
+{% block body %}
+<div class="predscontainer">
+    <div class="row" id="calendar">
+        <form action="/preds.html" method="POST">
+
+            <input type="date" value="2012-01-01" min="2012-01-01" max="2016-12-31">
+            <hr>
+            <input type="submit" value="Mostrar predicciones" class="btn btn-success">
+
+        </form>
+    </div>
+    <div class="row" id="graph">
+
+    </div>
+</div>
+{% endblock %}
