@@ -10,6 +10,7 @@ output:
     toc: true
     theme: united
     css: fontsize.css 
+bibliography: citas.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -25,16 +26,33 @@ library(plotly)
 
 En este informe se muestra el proceso de creación de variables para la construcción del modelo así como hallazgos encontrados para el proceso de modelación.
 
-# Creación de variables
+# Construcción de la base de datos
 
-# Análisis descriptivo
+La base de datos originalmente contaba con dos variables, fecha y unidades (la cual es la variable respuesta). Esta base estaba limpia pues no se encontraron incongruencias, valores faltantes, entre otros.
 
-En esta sección se presentan diversos gráficos para detectar posibles relaciones entre las covariables y la respuesta.
+## Creación de variables
+
+### Variables categóricas
+
+Inicialmente se uso la fecha para crear las variables día, mes, año y semana. Para dicho propósito se usaron las funciones `wday()`, `month`, `year()`, y `week()` de la librería `lubridate`. Dichas funciones fueron aplicadas a la variable fecha, la cual fue transformada previamente en un objeto de la clase date con la función `as.Date()` del paquete `base` de R. Por último se considero la variable festivos la cual se construyó gracias a un repositorio de GitHub [@RepoNequi] donde se encontró un modulo node.js el cual a través de JavaScript se pudo exportar a un objeto JSON, luego se usó la función `fromJSON()` de la librería `rjson` para poder trabajar con JavaScript Objects Notation (JSON) en R y así extraer los datos de los días festivos en Colombia.
+
+### Variables numéricas
+
+En este caso se consideraron variables numéricas las cuales tienen que ver con el cambio económico del país a lo largo de los años puesto que el aumento o decremento de estas podría afectar el poder adquisitivo de los ciudadanos, dichas variables fueron: PIB anual, PIB persona [@PIB], tasa de cambio representativo del mercado del dolar (TRM) [@TRM], salario mínimo [@SalMinimo], índice de precios al consumidor (IPC) e inflación mensual [@IPC]. Todas estas variables fueron tomadas de internet de páginas gubernamentales y luego fueron agregadas a la base de datos gracias a diversas funciones de la librería `dplyr` como `inner_join()`, `mutate()`, `filter()`, `select()`, entre otras.
 
 ```{r objetos edaed, warning=FALSE}
 #Invocando datos y plots del archivo Edaed.R
 source("Edaed.r", encoding = "UTF-8")
+kable(head(datos), longtable = T, align = "c",
+      col.names = c("Fecha", "Unidades", "Día", "Mes", "Año", "Semana",
+                    "Festivo", "PIB anual", "PIB persona", "TRM",
+                    "Salario mínimo", "IPC", "Inflación mensual"))
 ```
+
+# Análisis descriptivo
+
+En esta sección se presentan diversos gráficos para detectar posibles
+relaciones entre las covariables y la respuesta.
 
 ### Distribución del número global de vehículos registrados en los distintos días de la semana
 
@@ -74,5 +92,8 @@ ggpubr::ggarrange(s1, s2, s3, s4, s5, s6, ncol = 2, nrow = 3)
 En ningún caso se logra detectar algún tipo de relación funcional entre las covariables y la respuesta lo cual sugiere que estas variables pueden no ser útiles para el proceso de modelación.
 
 # Modelación
+
+# Bibliografía
+
 
 
