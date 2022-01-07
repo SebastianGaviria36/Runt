@@ -12,6 +12,11 @@ for (let year = 2012; year < 2018; year++) {
     }
 }
 
+// var temp = module.getColombiaHolidaysByYear(2018);
+// for (let i = 0; i < temp.length; i++) {
+//     obj.table.push(temp[i]);
+// }
+
 var json = JSON.stringify(obj);
 
 var fs = require('fs')
