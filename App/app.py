@@ -92,8 +92,12 @@ def aboutus():
     return render_template("aboutus.html")
 
 @app.route("/info/tech")
-def tech():
-    return render_template("_site/InformeTecnico.html")
+def infotech():
+    return render_template("infotech.html")
+
+@app.route("/inform")
+def inform():
+    return render_template("InformeTecnico.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
