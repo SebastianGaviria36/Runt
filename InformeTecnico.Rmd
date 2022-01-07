@@ -93,6 +93,51 @@ En ningún caso se logra detectar algún tipo de relación funcional entre las c
 
 # Modelación
 
+Para el proceso de modelación se consideran los modelos aditivos generalizados para localización, escala y forma [@gamlss] (GAMLSS por sus siglas en inglés). Estos modelos constituyen una gran gama de posibilidades para ajustar modelos de regresión donde no se cumple el supuesto de normalidad y/o homocedasticidad. Los modelos GAMLSS son muy flexibles puesto que permiten modelar hasta 4 parámetros de una distribución de probabilidad con diferentes funciones de suavizamiento, en general, un modelo gamlss es de la forma
+
+$$
+\mathbf{Y} \stackrel{\text{iid}}{\sim} \mathcal{D}(\mathbf{\mu, \sigma, \nu,\tau}) \\
+\mathbf{\eta_1} = g_1(\mathbf{\mu}) \\
+\mathbf{\eta_2} = g_2(\mathbf{\sigma}) \\
+\mathbf{\eta_3} = g_3(\mathbf{\nu}) \\
+\mathbf{\eta_4} = g_4(\mathbf{\tau})
+$$
+donde $\mathbf{\mu}$ es el parámetro de localización, $\mathbf{\sigma}$ escala y $\mathbf{\nu}, \mathbf{\tau}$ son parámetros de forma [@gamlss].
+
+Teniendo en cuenta el análisis descriptivo, se decidió buscar una distribución de probabilidad que se ajuste de mejor forma a los datos puesto que la densidad empírica de la respuesta no se parece a una normal, para este propósito se usa la función `fitDist()` de la librería `gamlss`. Dicha función busca en un amplio catalogo de distribuciones y encuentra la más adecuada usando el criterio de información de Akaike generalizado (GAIC), esto es
+
+$$
+\text{GAIC} = -2\hat{l} + k(df)
+$$
+con $\hat{l}$ el valor de log-verosimilitud del modelo en cuestión, $df$ los grados de libertad y $k$ es un valor escogido para penalizar el exceso de parámetros [@manualr], por defecto `fitDist()` toma $k=2$ y el GAIC se convierte en el AIC convencional. `fitDist()` tiene diversos argumentos, entre ellos se encuentra "type" en el cual se especifica el dominio de las distribuciones a usar, para el problema en cuestión se usa la función para que busque distribuciones de tipo conteo debido a la naturaleza del problema presentado y se obtienen un total de 30 distribuciones tentativas. 
+
+Las distribuciones con menor AIC fueron binomiales negativas con ceros ajustados e inflados respectivamente (ZANBI y ZINBI). En las demás distribuciones destacan la geométrica, poisson, poisson con ceros inflados, poisson generalizada entre otras, sin embargo el ajuste no fue tan satisfactorio como las dos primeros debido a que se encontraron diferencias sustanciales entre los AIC.
+
+## Selección del mejor modelo usando cross - validation
+
+Se utilizó la metodología de cross - validation para evaluar diversos modelos y encontrar aquel que provea explique el número de vehículos registrados en un día particular sin caer en sobreajuste. Se tomaron los datos del año 2012 - 2016 como datos de entrenamiento mientras que los datos de 2017 se dejaron como conjunto de validación. Inicialmente se probaron modelos con diversas combinaciones de variables categóricas y numéricas pero, desafortunadamente, las variables numéricas empeoraron el desempeño del modelo sin importar la distribución que se estuviera usando, por lo que se decidió no tenerlas en cuenta.
+
+Para finalizar, se menciona que también se ajustó un bosque aleatorio (random forest) y una regresión knn, sin embargo dicho modelos tuvieron un rendimiento demasiado pobre: el random forest sobreajustó bastante mientras que la regresión knn tuvo carencia de ajuste.
+
+Luego de ajustar los modelos se calcularon los coeficientes de determinación $R^2$ tanto en el conjunto de entrenamiento como en el de prueba se obtuvieron los siguientes resultados:
+
+```{r coef-determinacion}
+R2_train <- c(0.8377, 0.8369, 0.8464, 0.7751, 0.6844, 0.9567)
+R2_test <- c(0.7417, 0.7425, 0.7189, 0.7164, 0.2696, 0.7344)
+coef_det <- data.frame(R2_train, R2_test, 
+                       Diferencia = abs(R2_train - R2_test))
+rownames(coef_det) <- c("ZANBI", "ZINBI", "ZIP", "GEOM", "KNN", "RF")
+kable(coef_det, longtable = T, align = "c", escape = F,
+      col.names = c("$R_{\\text{train}}^2$", "$R_{\\text{test}}^2$",
+                    "|$R_{\\text{train}}^2 - R_{\\text{test}}^2$|"))
+```
+
+Se destaca los pobres desempeños del random forest (overfitting) y regresión knn (underfitting) tal como se mencionó previamente. Por otro lado, el modelo GAMLSS usando respuesta poisson inflada en cero aunque no cumple el criterio de prueba, su desempeño no está del todo mal. 
+
+Para finalizar, quedan los modelos con respuesta ZANBI, ZINBI y GEOM, note que los dos primeros tienen un desempeño muy similar y se podría escoger cualquiera de los dos, para esta situación se toma el ZINBI debido a que la diferencia entre el $R^2_{\text{train}}$ y $R^2_{\text{test}}$ es ligeramente menor respecto al ZANBI. Finalmente se tiene el modelo con respuesta geométrica, si bien tiene un porcentaje de variabilidad explicada menor respecto a los ZANBI y ZINBI es más consistente debido a que tiene menor variación entre el $R^2_{\text{train}}$ y  $R^2_{\text{test}}$.
+
+Dados los resultados de desempeño expuestos anteriormente, y la naturaleza del problema en cuestión, se toma finalmente la decisión de usar el modelo ajustado teniendo en cuenta una respuesta que se distribuye binomial negativa inflada en cero (ZINBI). Esta última se decide apropiada ya que en general, su propósito es modelar variables aleatorias con un recuento importante de ceros, además de ser idónea para conteos, el cual es el caso. Adicionalmente, otra caracerística de valor para el problema, es que esta distribución también puede ser adecuada modelar recuentos muy dispersos, propiedad de gran provecho para este propósito.
+
 # Bibliografía
 
 
