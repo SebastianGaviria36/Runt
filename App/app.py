@@ -93,7 +93,7 @@ def aboutus():
 
 @app.route("/info/tech")
 def tech():
-    return render_template("InformeTecnico.html")
+    return render_template("_site/InformeTecnico.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
