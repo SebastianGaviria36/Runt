@@ -1,7 +1,7 @@
 name: "Nombre de la aplicación"                                
 navbar:
   title: "Nombre de la apliación"
-  left:
+  right:
     - text: "Inicio"
       href: index.html                  
     - text: "GitHub"
