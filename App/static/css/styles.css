@@ -14,7 +14,6 @@
 
 .slider {
     background-color: #f2f2f2;
-    padding: 40px 0;
 }
 
 .slider__container {
@@ -41,7 +40,7 @@
     pointer-events: unset;
 }
 
-.slider__texts{
+.slider__texts {
     max-width: 600px;
 }
 
@@ -76,7 +75,7 @@
 }
 
 @media (max-width:768px) {
-    
+
     .slider__bosy {
         grid-template-columns: 1fr;
         grid-template-rows: max-content 1fr;
@@ -94,7 +93,7 @@
 }
 
 @media (max-width:425px) {
-    
+
     .slider__body {
         grid-template-columns: 25px 1fr 25px;
     }
@@ -115,6 +114,40 @@
 
     .slider__review {
         font-size: 1rem;
-        line-height: 1.6;   
+        line-height: 1.6;
     }
+}
+
+input[type=date]:valid::-webkit-datetime-edit-year-field {
+    color: black;
+}
+
+div.models {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    text-align: center;
+}
+
+div>main>div.p-5#us {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    text-align: center;
+}
+
+div.idxrow {
+    display: flex;
+    flex-direction: row;
+}
+
+div.idxtext {
+    align-items: center;
+}
+
+div.idximg {
+    align-items: center;
+}
+
+div.video {
+    display: flex;
+    justify-content: center;
 }

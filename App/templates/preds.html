@@ -5,18 +5,40 @@
 {% endblock %}
 
 {% block body %}
-<div class="predscontainer">
-    <div class="row" id="calendar">
-        <form action="/preds.html" method="POST">
+<main>
+    <div class="p-5 mb-4 bg-light rounded-3 models">
+        <div class="container-fluid py-5">
+          <h1 class="display-5 fw-bold">Explora nuestro modelo</h1>
+        </div>
+      </div>
+</main>
 
-            <input type="date" value="2012-01-01" min="2012-01-01" max="2016-12-31">
-            <hr>
-            <input type="submit" value="Mostrar predicciones" class="btn btn-success">
-
-        </form>
-    </div>
-    <div class="row" id="graph">
-
-    </div>
+<div class="row" id="calendar">
+    <form action="/modelo/preds" method="POST">
+        <label for="content">
+            <h4>Selecciona la fecha para la visualización</h4>
+        </label>
+        <input type="date" value="{{date.year}}-{{date.month}}-{{date.day}}" min="2017-01-01" max="2017-12-31"
+            name="preddate" id="preddate">
+        <hr>
+        <label for="content">
+            <h4>Selecciona el periodo de visualización</h4>
+        </label>
+        <select class="form-select" aria-label="Default select example" name="predfreq" id="predfreq">
+            <option value="{{ current.Vis }}" selected>{{ current.Vis }}</option>
+            <option value="{{ current.Not }}">{{ current.Not }}</option>
+        </select>
+        <hr>
+        <input type="submit" value="Mostrar predicciones" class="btn btn-success">
+    </form>
 </div>
+<div class="row chart" id="chart">
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+    var graphs = {{ graphJSON | safe}};
+    Plotly.plot('chart', graphs, {});        
+</script>
+
 {% endblock %}
