@@ -264,4 +264,16 @@ Flat2012_2016 <- data.frame(Fecha = Fechatrain, Prediccion = round(pred2012_2016
 write.csv(Flat2012_2016, "Flat2012_2016.csv")
 
 Flat2018 <- data.frame(Fecha = datos2018$Fecha, Prediccion = round(pred2018))
-write.csv(Flat2012_2016, "Flat2018.csv")
+write.csv(Flat2018, "Flat2018.csv")
+
+#GENERATING PREDICTIONS TO 2018 
+
+frame2018 <- data.frame(Fecha = Flat2018$Fecha,
+                     Valor = Flat2018$Prediccion,
+                     Clase = rep("predicho", length(Flat2018$Prediccion)),
+                     Dia = datos2018$Dia,
+                     Semana = datos2018$Semana,
+                     Mes = datos2018$Mes,
+                     Ano = datos2018$Ano)
+
+write.csv(frame2018, "pred2018.csv")
