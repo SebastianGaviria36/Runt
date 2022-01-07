@@ -38,10 +38,6 @@ def change_view(view:str, kind:str):
 def correct_date(date: dict):
     return {key: f"{date[key]}" if date[key] > 9 else f"0{date[key]}" for key in date.keys()}
 
-@app.route("/temp")
-def temp():
-    return visualization
-
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -97,7 +93,7 @@ def aboutus():
 
 @app.route("/info/tech")
 def tech():
-    return render_template("aboutus.html")
+    return render_template("InformeTecnico.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
