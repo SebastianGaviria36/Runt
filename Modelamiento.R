@@ -254,3 +254,14 @@ gendata <- function(modelo){
  }
 
 gendata(zinbi)
+
+#GENERTING FLAT FILES
+pred2012_2016 <- predict(zinbi, newdata = train[,2:6], type = "response")
+pred2018 <- predict(zinbi, newdata = datos2018[,2:6], type = "response")
+
+Fechatrain <- subset(datos, subset = 2012 <= datos$Ano & datos$Ano <= 2016 )[,1]
+Flat2012_2016 <- data.frame(Fecha = Fechatrain, Prediccion = round(pred2012_2016))
+write.csv(Flat2012_2016, "Flat2012_2016.csv")
+
+Flat2018 <- data.frame(Fecha = datos2018$Fecha, Prediccion = round(pred2018))
+write.csv(Flat2012_2016, "Flat2018.csv")
