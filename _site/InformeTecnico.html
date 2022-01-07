@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Juan José Galeano Arenas" />
+<meta name="author" content="Simón Pedro Galeano Muñoz" />
+<meta name="author" content="Sebastian Gaviria Sanchez" />
+<meta name="author" content="Verónica Ríos Vargas" />
+
+
+<title>Informe Técnico</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="fontsize.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Nombre de la apliación</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Inicio</a>
+</li>
+<li>
+  <a href="https://github.com/SebastianGaviria36/Runt/">
+    <span class="fa fa-github"></span>
+     
+    GitHub
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Informe Técnico</h1>
+<h4 class="author">Juan José Galeano Arenas</h4>
+<h4 class="author">Simón Pedro Galeano Muñoz</h4>
+<h4 class="author">Sebastian Gaviria Sanchez</h4>
+<h4 class="author">Verónica Ríos Vargas</h4>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#construcción-de-la-base-de-datos">Construcción de la base de datos</a>
+<ul>
+<li><a href="#creación-de-variables">Creación de variables</a>
+<ul>
+<li><a href="#variables-categóricas">Variables categóricas</a></li>
+<li><a href="#variables-numéricas">Variables numéricas</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#análisis-descriptivo">Análisis descriptivo</a>
+<ul>
+<li><a href="#distribución-del-número-global-de-vehículos-registrados-en-los-distintos-días-de-la-semana">Distribución del número global de vehículos registrados en los distintos días de la semana</a></li>
+<li><a href="#distribución-del-número-de-vehiculos-registrados-en-los-distintos-días-de-la-semana-discriminando-por-año">Distribución del número de vehiculos registrados en los distintos días de la semana discriminando por año</a></li>
+<li><a href="#correlación-lineal-entre-variables-numéricas">Correlación lineal entre variables numéricas</a></li>
+<li><a href="#diagramas-de-dispersión-para-unidades-vs-regresores">Diagramas de dispersión para Unidades vs regresores</a></li>
+</ul></li>
+<li><a href="#modelación">Modelación</a>
+<ul>
+<li><a href="#selección-del-mejor-modelo-usando-cross---validation">Selección del mejor modelo usando cross - validation</a></li>
+</ul></li>
+<li><a href="#bibliografía">Bibliografía</a></li>
+</ul>
+</div>
+
+<p>En este informe se muestra el proceso de creación de variables para la construcción del modelo así como hallazgos encontrados para el proceso de modelación.</p>
+<div id="construcción-de-la-base-de-datos" class="section level1">
+<h1>Construcción de la base de datos</h1>
+<p>La base de datos originalmente contaba con dos variables, fecha y unidades (la cual es la variable respuesta). Esta base estaba limpia pues no se encontraron incongruencias, valores faltantes, entre otros.</p>
+<div id="creación-de-variables" class="section level2">
+<h2>Creación de variables</h2>
+<div id="variables-categóricas" class="section level3">
+<h3>Variables categóricas</h3>
+<p>Inicialmente se usó la fecha para crear las variables día, mes, año y semana. Para dicho propósito se usaron las funciones <code>wday()</code>, <code>month</code>, <code>year()</code>, y <code>week()</code> de la librería <code>lubridate</code>. Dichas funciones fueron aplicadas a la variable fecha, la cual fue transformada previamente en un objeto de la clase date con la función <code>as.Date()</code> del paquete <code>base</code> de R. Por último se consideró la variable festivos la cual se construyó gracias a un repositorio de GitHub <span class="citation">(Nequi Colombia 2017)</span> donde se encontró un módulo node.js el cual a través de JavaScript se pudo exportar a un objeto JSON, luego se usó la función <code>fromJSON()</code> de la librería <code>rjson</code> para poder trabajar con JavaScript Objects Notation (JSON) en R y así extraer los datos de los días festivos en Colombia.</p>
+</div>
+<div id="variables-numéricas" class="section level3">
+<h3>Variables numéricas</h3>
+<p>En este caso se consideraron variables numéricas las cuales tienen que ver con el cambio económico del país a lo largo de los años puesto que el aumento o decremento de estas podría afectar el poder adquisitivo de los ciudadanos. Dichas variables fueron: PIB anual, PIB persona <span class="citation">(Banco de la república, n.d.b)</span>, tasa de cambio representativo del mercado del dolar (TRM) <span class="citation">(Banco de la república, n.d.d)</span>, salario mínimo <span class="citation">(Banco de la república, n.d.c)</span>, índice de precios al consumidor (IPC) e inflación mensual <span class="citation">(Banco de la república, n.d.a)</span>. Todas estas variables fueron tomadas de internet en páginas gubernamentales y luego fueron agregadas a la base de datos gracias a diversas funciones de la librería <code>dplyr</code> como <code>inner_join()</code>, <code>mutate()</code>, <code>filter()</code>, <code>select()</code>, entre otras.</p>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="7%" />
+<col width="3%" />
+<col width="3%" />
+<col width="4%" />
+<col width="6%" />
+<col width="6%" />
+<col width="8%" />
+<col width="10%" />
+<col width="6%" />
+<col width="12%" />
+<col width="5%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Fecha</th>
+<th align="center">Unidades</th>
+<th align="center">Día</th>
+<th align="center">Mes</th>
+<th align="center">Año</th>
+<th align="center">Semana</th>
+<th align="center">Festivo</th>
+<th align="center">PIB anual</th>
+<th align="center">PIB persona</th>
+<th align="center">TRM</th>
+<th align="center">Salario mínimo</th>
+<th align="center">IPC</th>
+<th align="center">Inflación mensual</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">2012-01-01</td>
+<td align="center">0</td>
+<td align="center">dom</td>
+<td align="center">ene</td>
+<td align="center">2012</td>
+<td align="center">1</td>
+<td align="center">Si</td>
+<td align="center">3.912636</td>
+<td align="center">2.943729</td>
+<td align="center">1942.70</td>
+<td align="center">566700</td>
+<td align="center">76.75</td>
+<td align="center">0.73</td>
+</tr>
+<tr class="even">
+<td align="center">2012-01-02</td>
+<td align="center">188</td>
+<td align="center">lun</td>
+<td align="center">ene</td>
+<td align="center">2012</td>
+<td align="center">1</td>
+<td align="center">No</td>
+<td align="center">3.912636</td>
+<td align="center">2.943729</td>
+<td align="center">1942.70</td>
+<td align="center">566700</td>
+<td align="center">76.75</td>
+<td align="center">0.73</td>
+</tr>
+<tr class="odd">
+<td align="center">2012-01-03</td>
+<td align="center">482</td>
+<td align="center">mar</td>
+<td align="center">ene</td>
+<td align="center">2012</td>
+<td align="center">1</td>
+<td align="center">No</td>
+<td align="center">3.912636</td>
+<td align="center">2.943729</td>
+<td align="center">1942.70</td>
+<td align="center">566700</td>
+<td align="center">76.75</td>
+<td align="center">0.73</td>
+</tr>
+<tr class="even">
+<td align="center">2012-01-04</td>
+<td align="center">927</td>
+<td align="center">mié</td>
+<td align="center">ene</td>
+<td align="center">2012</td>
+<td align="center">1</td>
+<td align="center">No</td>
+<td align="center">3.912636</td>
+<td align="center">2.943729</td>
+<td align="center">1915.02</td>
+<td align="center">566700</td>
+<td align="center">76.75</td>
+<td align="center">0.73</td>
+</tr>
+<tr class="odd">
+<td align="center">2012-01-05</td>
+<td align="center">1159</td>
+<td align="center">jue</td>
+<td align="center">ene</td>
+<td align="center">2012</td>
+<td align="center">1</td>
+<td align="center">No</td>
+<td align="center">3.912636</td>
+<td align="center">2.943729</td>
+<td align="center">1898.24</td>
+<td align="center">566700</td>
+<td align="center">76.75</td>
+<td align="center">0.73</td>
+</tr>
+<tr class="even">
+<td align="center">2012-01-06</td>
+<td align="center">996</td>
+<td align="center">vie</td>
+<td align="center">ene</td>
+<td align="center">2012</td>
+<td align="center">1</td>
+<td align="center">No</td>
+<td align="center">3.912636</td>
+<td align="center">2.943729</td>
+<td align="center">1884.44</td>
+<td align="center">566700</td>
+<td align="center">76.75</td>
+<td align="center">0.73</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="análisis-descriptivo" class="section level1">
+<h1>Análisis descriptivo</h1>
+<p>En esta sección se presentan diversos gráficos para detectar posibles relaciones entre las covariables y la respuesta.</p>
+<div id="distribución-del-número-global-de-vehículos-registrados-en-los-distintos-días-de-la-semana" class="section level3">
+<h3>Distribución del número global de vehículos registrados en los distintos días de la semana</h3>
+<div class="figure" style="text-align: center">
+<img src="InformeTecnico_files/figure-html/unidades-dia-semana-global-1.png" alt="Unidades registradas en cada día de la semana (global)" width="672" />
+<p class="caption">
+Unidades registradas en cada día de la semana (global)
+</p>
+</div>
+<p>En este gráfico se logra apreciar una clara discrepancia entre el número de vehículos registrados en los diferentes días de la semana siendo sábado aquel día en el que, objetivamente, menos registros se presentan. La escasez de registros del domingo es debida a que “no se registran vehículos” en este día, sin embargo no debería tener observaciones; la frecuencia no nula del mismo se podría deber a retrasos en los sistemas informáticos o demás anomalías en el horario laboral.</p>
+</div>
+<div id="distribución-del-número-de-vehiculos-registrados-en-los-distintos-días-de-la-semana-discriminando-por-año" class="section level3">
+<h3>Distribución del número de vehiculos registrados en los distintos días de la semana discriminando por año</h3>
+<p>El análisis previo se desarrolló de manera global, sin embargo, surge la duda de si dicho comportamiento cambia en los distintos años o se mantiene igual.</p>
+<div class="figure" style="text-align: center">
+<img src="InformeTecnico_files/figure-html/discrimina-ano-1.png" alt="Unidades registradas en cada día de la semana (anual)" width="672" />
+<p class="caption">
+Unidades registradas en cada día de la semana (anual)
+</p>
+</div>
+<p>Observe que el número de registros por día se distribuye de forma similar a lo largo de los años, también se aprecia que a medida que avanzan los años el número de registros es menor lo cual sugiere que existen fenómenos que han afectado el poder adquisitivo de las personas.</p>
+</div>
+<div id="correlación-lineal-entre-variables-numéricas" class="section level3">
+<h3>Correlación lineal entre variables numéricas</h3>
+<p>La correlación lineal interesa por dos principales razones:</p>
+<ul>
+<li>Observar si un modelo lineal es útil para predecir el número de vehículos registrados un día particular.</li>
+<li>Evitar potenciales problemas de multicolinealidad producido por covariables que estén muy correlacionadas.</li>
+</ul>
+<div class="figure" style="text-align: center">
+<img src="InformeTecnico_files/figure-html/corr-matrix-1.png" alt="Correlación lineal entre variables numéricas" width="672" />
+<p class="caption">
+Correlación lineal entre variables numéricas
+</p>
+</div>
+<p>Note que la correlación lineal entre la variable respuesta y cada una de las covariables es muy baja por lo que un modelo lineal usando los regresores crudos puede no ser adecuado. Por otro lado, a excepción de la inflación mensual, los predictores están muy correlacionados linealmente y por lo tanto pueden provocar potentes problemas de multicolinealidad, luego en caso de usar variables numéricas en modelos sensibles a la multicolinealidad se debería tomar únicamente una de estas.</p>
+</div>
+<div id="diagramas-de-dispersión-para-unidades-vs-regresores" class="section level3">
+<h3>Diagramas de dispersión para Unidades vs regresores</h3>
+<p>Puesto que las correlaciones lineales son muy bajas, se grafican diagramas de dispersión con el propósito de hallar posibles relaciones de otro tipo entre el número de registros de vehículos diarios y las variables predictoras numéricas.</p>
+<div class="figure" style="text-align: center">
+<img src="InformeTecnico_files/figure-html/scatters-1.png" alt="Diagramas de dispersión" width="672" />
+<p class="caption">
+Diagramas de dispersión
+</p>
+</div>
+<p>En ningún caso se logra detectar algún tipo de relación funcional entre las covariables y la respuesta lo cual sugiere que estas variables pueden no ser útiles para el proceso de modelación.</p>
+</div>
+</div>
+<div id="modelación" class="section level1">
+<h1>Modelación</h1>
+<p>Para el proceso de modelación se consideran los modelos aditivos generalizados para localización, escala y forma <span class="citation">(Stasinopoulos et al. 2017)</span> (GAMLSS por sus siglas en inglés). Estos modelos constituyen una gran gama de posibilidades para ajustar modelos de regresión donde no se cumple el supuesto de normalidad y/o homocedasticidad. Los modelos GAMLSS son muy flexibles puesto que permiten modelar hasta 4 parámetros de una distribución de probabilidad con diferentes funciones de suavizamiento, en general, un modelo gamlss es de la forma.</p>
+<p><span class="math display">\[
+\mathbf{Y} \stackrel{\text{iid}}{\sim} \mathcal{D}(\mathbf{\mu, \sigma, \nu,\tau}) \\
+\mathbf{\eta_1} = g_1(\mathbf{\mu}) \\
+\mathbf{\eta_2} = g_2(\mathbf{\sigma}) \\
+\mathbf{\eta_3} = g_3(\mathbf{\nu}) \\
+\mathbf{\eta_4} = g_4(\mathbf{\tau})
+\]</span> donde <span class="math inline">\(\mathbf{\mu}\)</span> es el parámetro de localización, <span class="math inline">\(\mathbf{\sigma}\)</span> escala y <span class="math inline">\(\mathbf{\nu}, \mathbf{\tau}\)</span> son parámetros de forma <span class="citation">(Stasinopoulos et al. 2017)</span>.</p>
+<p>Teniendo en cuenta el análisis descriptivo, se decidió buscar una distribución de probabilidad que se ajuste de mejor forma a los datos puesto que, la densidad empírica de la respuesta no se parece a una distribución normal, Para este propósito se usa la función <code>fitDist()</code> de la librería <code>gamlss</code>. Dicha función busca en un amplio catálogo de distribuciones y encuentra la más adecuada usando el criterio de información de Akaike generalizado (GAIC), esto es:</p>
+<p><span class="math display">\[
+\text{GAIC} = -2\hat{l} + k(df)
+\]</span> Con <span class="math inline">\(\hat{l}\)</span> el valor de log-verosimilitud del modelo en cuestión, <span class="math inline">\(df\)</span> los grados de libertad y <span class="math inline">\(k\)</span> un valor escogido para penalizar el exceso de parámetros <span class="citation">(Hernández and Usuga 2021)</span>. Por defecto <code>fitDist()</code> toma <span class="math inline">\(k=2\)</span> y el GAIC se convierte en el AIC convencional. <code>fitDist()</code> tiene diversos argumentos, entre ellos se encuentra “type” en el cual se especifica el dominio de las distribuciones a usar, para el problema en cuestión se usa la función para que busque distribuciones de tipo conteo debido a la naturaleza del problema presentado y se obtienen un total de 30 distribuciones tentativas.</p>
+<p>Las distribuciones con menor AIC fueron binomiales negativas con ceros ajustados e inflados respectivamente (ZANBI y ZINBI). En las demás distribuciones destacan la geométrica, poisson, poisson con ceros inflados, poisson generalizada entre otras, sin embargo el ajuste no fue tan satisfactorio como los dos primeros debido a que se encontraron diferencias sustanciales entre los AIC.</p>
+<div id="selección-del-mejor-modelo-usando-cross---validation" class="section level2">
+<h2>Selección del mejor modelo usando cross - validation</h2>
+<p>Se utilizó la metodología de cross - validation para evaluar diversos modelos y encontrar aquel que mejor explique el número de vehículos registrados en un día particular sin caer en sobreajuste. Se tomaron los datos del año 2012 - 2016 como datos de entrenamiento mientras que los datos de 2017 se dejaron como conjunto de validación. Inicialmente se probaron modelos con diversas combinaciones de variables categóricas y numéricas pero, desafortunadamente, las variables numéricas empeoraron el desempeño del modelo en todos los casos sin importar la distribución que se estuviera usando, por lo que se decidió no incluirlas en el mismo.</p>
+<p>Para finalizar, cabe mencionar que también se ajustó un bosque aleatorio (random forest) y una regresión knn, sin embargo dicho modelos tuvieron un rendimiento demasiado pobre: el random forest sobreajustó considerablemente mientras que la regresión knn obtuvo predicciones muy pobres.</p>
+<p>Luego de ajustar los modelos se calcularon los coeficientes de determinación <span class="math inline">\(R^2\)</span> tanto en el conjunto de entrenamiento como en el de prueba se obtuvieron los siguientes resultados:</p>
+<table>
+<colgroup>
+<col width="5%" />
+<col width="21%" />
+<col width="20%" />
+<col width="52%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center"><span class="math inline">\(R_{\text{train}}^2\)</span></th>
+<th align="center"><span class="math inline">\(R_{\text{test}}^2\)</span></th>
+<th align="center">|<span class="math inline">\(R_{\text{train}}^2 - R_{\text{test}}^2\)</span>|</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ZANBI</td>
+<td align="center">0.8377</td>
+<td align="center">0.7417</td>
+<td align="center">0.0960</td>
+</tr>
+<tr class="even">
+<td align="left">ZINBI</td>
+<td align="center">0.8369</td>
+<td align="center">0.7425</td>
+<td align="center">0.0944</td>
+</tr>
+<tr class="odd">
+<td align="left">ZIP</td>
+<td align="center">0.8464</td>
+<td align="center">0.7189</td>
+<td align="center">0.1275</td>
+</tr>
+<tr class="even">
+<td align="left">GEOM</td>
+<td align="center">0.7751</td>
+<td align="center">0.7164</td>
+<td align="center">0.0587</td>
+</tr>
+<tr class="odd">
+<td align="left">KNN</td>
+<td align="center">0.6844</td>
+<td align="center">0.2696</td>
+<td align="center">0.4148</td>
+</tr>
+<tr class="even">
+<td align="left">RF</td>
+<td align="center">0.9567</td>
+<td align="center">0.7344</td>
+<td align="center">0.2223</td>
+</tr>
+</tbody>
+</table>
+<p>Se destaca los pobres desempeños del random forest (overfitting) y regresión knn (underfitting) tal como se mencionó previamente. Por otro lado, el modelo GAMLSS usando respuesta poisson inflada en cero aunque no cumple el criterio de prueba, su desempeño es destacable.</p>
+<p>Para finalizar, quedan los modelos con respuesta ZANBI, ZINBI y GEOM, note que los dos primeros tienen un desempeño muy similar y se podría escoger cualquiera de los dos. Para esta situación se toma el modelo que considera respuesta ZINBI debido a que la diferencia entre el <span class="math inline">\(R^2_{\text{train}}\)</span> y <span class="math inline">\(R^2_{\text{test}}\)</span> es ligeramente menor respecto al modelo con respuesta ZANBI. Finalmente se tiene el modelo con respuesta geométrica, si bien tiene un porcentaje de variabilidad explicada menor respecto a los modelos con respuesta ZANBI y ZINBI es más consistente debido a que tiene menor variación entre el <span class="math inline">\(R^2_{\text{train}}\)</span> y <span class="math inline">\(R^2_{\text{test}}\)</span>.</p>
+<p>Dados los resultados de desempeño expuestos anteriormente, y la naturaleza del problema en cuestión, se toma finalmente la decisión de usar el modelo ajustado teniendo en cuenta una respuesta que se distribuye binomial negativa inflada en cero (ZINBI). Esta última se decide apropiada ya que en general, su propósito es modelar variables aleatorias con un recuento importante de ceros, además de ser idónea para conteos, el cual es el caso. Adicionalmente, otra caracerística de valor para el problema, es que esta distribución también puede ser adecuada modelar recuentos muy dispersos, propiedad de gran provecho para este propósito.</p>
+</div>
+</div>
+<div id="bibliografía" class="section level1 unnumbered">
+<h1 class="unnumbered">Bibliografía</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-IPC" class="csl-entry">
+Banco de la república. n.d.a. <span>“Índice de Precio Al Consumidor (IPC),”</span> <a href="https://www.banrep.gov.co/es/estadisticas/indice-precios-consumidor-ipc">https://www.banrep.gov.co/es/estadisticas/indice-precios-consumidor-ipc</a>.
+</div>
+<div id="ref-PIB" class="csl-entry">
+———. n.d.b. <span>“Producto Interno Bruto (PIB).”</span> <a href="https://www.banrep.gov.co/es/estadisticas/producto-interno-bruto-pib">https://www.banrep.gov.co/es/estadisticas/producto-interno-bruto-pib</a>.
+</div>
+<div id="ref-SalMinimo" class="csl-entry">
+———. n.d.c. <span>“Salarios.”</span> <a href="https://www.banrep.gov.co/es/estadisticas/salarios">https://www.banrep.gov.co/es/estadisticas/salarios</a>.
+</div>
+<div id="ref-TRM" class="csl-entry">
+———. n.d.d. <span>“Tasa Representativa Del Mercado.”</span> <a href="https://www.banrep.gov.co/es/estadisticas/trm">https://www.banrep.gov.co/es/estadisticas/trm</a>.
+</div>
+<div id="ref-manualr" class="csl-entry">
+Hernández, Freddy, and Olga Usuga. 2021. <span>“Manual de r.”</span> 2021. <a href="https://fhernanb.github.io/Manual-de-R/">https://fhernanb.github.io/Manual-de-R/</a>.
+</div>
+<div id="ref-RepoNequi" class="csl-entry">
+Nequi Colombia. 2017. <span>“<span>Colombia Holidays</span>.”</span> 2017. <a href="https://github.com/nequibc/colombia-holidays">https://github.com/nequibc/colombia-holidays</a>.
+</div>
+<div id="ref-gamlss" class="csl-entry">
+Stasinopoulos, Mikis D., Robert A. Rigby, Gillian Z. Heller, Vlasios Voudouris, and Fernanda De Bastiani. 2017. <em>Flexible Regression and Smoothing Using GAMLSS in r</em>. 1st ed. Chapman; Hall/CRC.
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -42,7 +42,7 @@ En este caso se consideraron variables numéricas las cuales tienen que ver con 
 
 ```{r objetos edaed, warning=FALSE}
 #Invocando datos y plots del archivo Edaed.R
-source("Edaed.r", encoding = "UTF-8")
+source("Edaed.R", encoding = "UTF-8")
 kable(head(datos), longtable = T, align = "c",
       col.names = c("Fecha", "Unidades", "Día", "Mes", "Año", "Semana",
                     "Festivo", "PIB anual", "PIB persona", "TRM",
