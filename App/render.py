@@ -10,7 +10,7 @@ def title_generator(kind_id:int, week:bool = False):
 def plot(year:int, month:int, day:int, path:str, week:bool = False, kind_id:int = 0):
     df = pd.read_csv(path)
     if week:
-        temp = int(df[(df.Ano == year) & (df.Mes == month) & (df.Dia == day) & (df.Clase == "Real")].Semana)
+        temp = int(df[(df.Ano == year) & (df.Mes == month) & (df.Dia == day) & (df.Clase == ("Predicho" if kind_id == 2 else "Real"))].Semana)
         df = df[(df.Ano == year) & (df.Semana == temp)]
     else:
         df = df[(df.Ano == year) & (df.Mes == month)]

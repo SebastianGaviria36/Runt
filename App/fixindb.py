@@ -13,8 +13,11 @@ def fixed(df, path):
     df.to_csv(path, index=False)
     return 
 
-paths = ["predtest.csv", "predtrain.csv"]
+# paths = ["predtest.csv", "predtrain.csv"]
 
-for path in paths:
-    df = pd.read_csv(path)
-    fixed(df, path)
+# for path in paths:
+    # df = pd.read_csv(path)
+    # fixed(df, path)
+
+df = pd.read_csv("pred2018.csv")
+fixed(df, "pred2018.csv")

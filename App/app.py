@@ -9,7 +9,7 @@ app = Flask(__name__)
 dates = {
     "train": {"year": 2012, "month": 1, "day":1},
     "test": {"year": 2017, "month": 1, "day":1},
-    "preds": {"year": 2017, "month": 1, "day":1},
+    "preds": {"year": 2018, "month": 1, "day":1},
 }
 
 visualization = {key:False for key in dates.keys()}
@@ -84,7 +84,7 @@ def preds():
 
     return render_template("preds.html",
     graphJSON=plot(dates["preds"]["year"], dates["preds"]["month"],
-    dates["preds"]["day"], "predtest.csv", visualization["preds"], 2),
+    dates["preds"]["day"], "pred2018.csv", visualization["preds"], 2),
     date=correct_date(dates["preds"]), current=currentvis["preds"])
 
 @app.route("/info/aboutus")

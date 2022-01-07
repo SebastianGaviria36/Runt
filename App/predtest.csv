@@ -363,7 +363,7 @@ Fecha,Valor,Clase,Dia,Semana,Mes,Ano,DiaString
 2017-12-28,3449.0,Real,28,52,12,2017,Jueves
 2017-12-29,1084.0,Real,29,52,12,2017,Viernes
 2017-12-30,18.0,Real,30,52,12,2017,Sábado
-2017-12-31,0.0,Real,31,53,12,2017,Domingo
+2017-12-31,0.0,Real,31,52,12,2017,Domingo
 2017-01-01,0.0,Predicho,1,1,1,2017,Domingo
 2017-01-02,449.0,Predicho,2,1,1,2017,Lunes
 2017-01-03,555.0,Predicho,3,1,1,2017,Martes
@@ -728,4 +728,4 @@ Fecha,Valor,Clase,Dia,Semana,Mes,Ano,DiaString
 2017-12-28,1593.0,Predicho,28,52,12,2017,Jueves
 2017-12-29,1651.0,Predicho,29,52,12,2017,Viernes
 2017-12-30,484.0,Predicho,30,52,12,2017,Sábado
-2017-12-31,10.0,Predicho,31,53,12,2017,Domingo
+2017-12-31,10.0,Predicho,31,52,12,2017,Domingo
