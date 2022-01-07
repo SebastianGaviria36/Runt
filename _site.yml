@@ -1,9 +1,0 @@
-name: "Nombre de la aplicación"                                
-navbar:
-  title: "Nombre de la apliación"
-  right:
-    - text: "Inicio"
-      href: index.html                  
-    - text: "GitHub"
-      icon: fa-github
-      href: https://github.com/SebastianGaviria36/Runt/  
