@@ -1,7 +1,4 @@
-from datetime import date
-from types import MethodDescriptorType
-from flask import Flask, request, redirect, render_template, Markup
-from pandas.core.indexes import period
+from flask import Flask, request, redirect, render_template
 from render import plot
 
 app = Flask(__name__)
