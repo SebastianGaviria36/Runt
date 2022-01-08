@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, render_template
-from render import plot
+from App.render import plot
 
 app = Flask(__name__)
 
@@ -51,7 +51,7 @@ def train():
         
     return render_template("train.html",
     graphJSON=plot(dates["train"]["year"], dates["train"]["month"],
-    dates["train"]["day"], "predtrain.csv", visualization["train"], 0),
+    dates["train"]["day"], "App/predtrain.csv", visualization["train"], 0),
     date=correct_date(dates["train"]), current=currentvis["train"])
 
 @app.route("/modelo/test", methods=["GET", "POST"])
@@ -66,7 +66,7 @@ def test():
 
     return render_template("test.html",
     graphJSON=plot(dates["test"]["year"], dates["test"]["month"],
-    dates["test"]["day"], "predtest.csv", visualization["test"], 1),
+    dates["test"]["day"], "App/predtest.csv", visualization["test"], 1),
     date=correct_date(dates["test"]), current=currentvis["test"])
 
 @app.route("/modelo/preds", methods=["GET", "POST"])
@@ -81,7 +81,7 @@ def preds():
 
     return render_template("preds.html",
     graphJSON=plot(dates["preds"]["year"], dates["preds"]["month"],
-    dates["preds"]["day"], "pred2018.csv", visualization["preds"], 2),
+    dates["preds"]["day"], "App/pred2018.csv", visualization["preds"], 2),
     date=correct_date(dates["preds"]), current=currentvis["preds"])
 
 @app.route("/info/aboutus")
@@ -95,6 +95,3 @@ def infotech():
 @app.route("/inform")
 def inform():
     return render_template("InformeTecnico.html")
-
-if __name__ == "__main__":
-    app.run(debug=True)
