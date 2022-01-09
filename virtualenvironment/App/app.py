@@ -1,42 +1,45 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, session
+from flask_session import Session
 from App.render import plot
 
 app = Flask(__name__)
 
-dates = {
-    "train": {"year": 2012, "month": 1, "day":1},
-    "test": {"year": 2017, "month": 1, "day":1},
-    "preds": {"year": 2018, "month": 1, "day":1},
-}
-
-visualization = {key:False for key in dates.keys()}
-
-currentvis = {key:{"Vis": "Mensual", "Not": "Semanal"} for key in dates.keys()}
+SESSION_TYPE = 'filesystem'
+app.config.from_object(__name__)
+Session(app)
 
 def change_date(date:str, kind:str):
-    
-    global dates
-    
+
     year, month, day = list(map(int, date.split("-")))
-    dates[kind]["year"] = year
-    dates[kind]["month"] = month
-    dates[kind]["day"] = day
+    session['dates'][kind]["year"] = year
+    session['dates'][kind]["month"] = month
+    session['dates'][kind]["day"] = day
 
 def change_view(view:str, kind:str):
-    
-    global visualization, currentvis
 
-    visualization[kind] = (view == "Semanal")
-    if currentvis[kind]["Vis"] != view:
-        temp = currentvis[kind]["Vis"]
-        currentvis[kind]["Vis"] = view
-        currentvis[kind]["Not"] = temp
+    session['visualization'][kind] = (view == "Semanal")
+    if session['currentvis'][kind]["Vis"] != view:
+        temp = session['currentvis'][kind]["Vis"]
+        session['currentvis'][kind]["Vis"] = view
+        session['currentvis'][kind]["Not"] = temp
 
 def correct_date(date: dict):
     return {key: f"{date[key]}" if date[key] > 9 else f"0{date[key]}" for key in date.keys()}
 
 @app.route("/")
 def index():
+    
+    if 'dates' not in session:
+        session['dates'] = {
+        "train": {"year": 2012, "month": 1, "day":1},
+        "test": {"year": 2017, "month": 1, "day":1},
+        "preds": {"year": 2018, "month": 1, "day":1}
+        }
+    
+        session['visualization'] = {key:False for key in session['dates'].keys()}
+    
+        session['currentvis'] = {key:{"Vis": "Mensual", "Not": "Semanal"} for key in session['dates'].keys()}
+    
     return render_template("index.html")
 
 @app.route("/modelo/train", methods=["GET", "POST"])
@@ -50,9 +53,9 @@ def train():
         return redirect("/modelo/train")
         
     return render_template("train.html",
-    graphJSON=plot(dates["train"]["year"], dates["train"]["month"],
-    dates["train"]["day"], "App/predtrain.csv", visualization["train"], 0),
-    date=correct_date(dates["train"]), current=currentvis["train"])
+    graphJSON=plot(session['dates']["train"]["year"], session['dates']["train"]["month"],
+    session['dates']["train"]["day"], "App/predtrain.csv", session['visualization']["train"], 0),
+    date=correct_date(session['dates']["train"]), current=session['currentvis']["train"])
 
 @app.route("/modelo/test", methods=["GET", "POST"])
 def test():
@@ -65,9 +68,9 @@ def test():
         return redirect("/modelo/test")
 
     return render_template("test.html",
-    graphJSON=plot(dates["test"]["year"], dates["test"]["month"],
-    dates["test"]["day"], "App/predtest.csv", visualization["test"], 1),
-    date=correct_date(dates["test"]), current=currentvis["test"])
+    graphJSON=plot(session['dates']["test"]["year"], session['dates']["test"]["month"],
+    session['dates']["test"]["day"], "App/predtest.csv", session['visualization']["test"], 1),
+    date=correct_date(session['dates']["test"]), current=session['currentvis']["test"])
 
 @app.route("/modelo/preds", methods=["GET", "POST"])
 def preds():
@@ -80,9 +83,9 @@ def preds():
         return redirect("/modelo/preds")
 
     return render_template("preds.html",
-    graphJSON=plot(dates["preds"]["year"], dates["preds"]["month"],
-    dates["preds"]["day"], "App/pred2018.csv", visualization["preds"], 2),
-    date=correct_date(dates["preds"]), current=currentvis["preds"])
+    graphJSON=plot(session['dates']["preds"]["year"], session['dates']["preds"]["month"],
+    session['dates']["preds"]["day"], "App/pred2018.csv", session['visualization']["preds"], 2),
+    date=correct_date(session['dates']["preds"]), current=session['currentvis']["preds"])
 
 @app.route("/info/aboutus")
 def aboutus():
