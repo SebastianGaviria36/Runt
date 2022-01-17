@@ -1,4 +1,9 @@
-# Runt
+# Informe Técnico
+
+<p align="center">
+<img src=https://images.pexels.com/photos/590041/pexels-photo-590041.jpeg?cs=srgb&dl=pexels-lukas-590041.jpg&fm=jpg />
+</p>
+
 Bienvenido a la rama InformeTécnico, en esta rama encontrarás los archivos
  principales Edaed.R e InformeTecnico.Rmd.
 
