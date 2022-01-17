@@ -256,12 +256,12 @@ gendata <- function(modelo){
 gendata(zinbi)
 
 #GENERTING FLAT FILES
-pred2012_2016 <- predict(zinbi, newdata = train[,2:6], type = "response")
+pred2012_2017 <- predict(zinbi, newdata = datos[,3:7], type = "response")
 pred2018 <- predict(zinbi, newdata = datos2018[,2:6], type = "response")
 
-Fechatrain <- subset(datos, subset = 2012 <= datos$Ano & datos$Ano <= 2016 )[,1]
-Flat2012_2016 <- data.frame(Fecha = Fechatrain, Prediccion = round(pred2012_2016))
-write.csv(Flat2012_2016, "Flat2012_2016.csv")
+Fechatrain <- subset(datos, subset = 2012 <= datos$Ano & datos$Ano <= 2017 )[,1]
+Flat2012_2017 <- data.frame(Fecha = Fechatrain, Prediccion = round(pred2012_2016))
+write.csv(Flat2012_2017, "Flat2012_2017.csv")
 
 Flat2018 <- data.frame(Fecha = datos2018$Fecha, Prediccion = round(pred2018))
 write.csv(Flat2018, "Flat2018.csv")
@@ -271,9 +271,9 @@ write.csv(Flat2018, "Flat2018.csv")
 frame2018 <- data.frame(Fecha = Flat2018$Fecha,
                      Valor = Flat2018$Prediccion,
                      Clase = rep("predicho", length(Flat2018$Prediccion)),
-                     Dia = datos2018$Dia,
-                     Semana = datos2018$Semana,
-                     Mes = datos2018$Mes,
-                     Ano = datos2018$Ano)
+                     Dia = wday(datos2018$Fecha),
+                     Semana = week(datos2018$Fecha),
+                     Mes = month(datos2018$Fecha),
+                     Ano = year(datos2018$Fecha))
 
-write.csv(frame2018, "pred2018.csv")
+write.csv(frame2018, "pred2018.csv", row.names = F)
