@@ -1,0 +1,33 @@
+input[type=date]:valid::-webkit-datetime-edit-year-field {
+    color: black;
+}
+
+div.models {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    text-align: center;
+}
+
+div>main>div.p-5#us {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    text-align: center;
+}
+
+div.idxrow {
+    display: flex;
+    flex-direction: row;
+}
+
+div.idxtext {
+    align-items: center;
+}
+
+div.idximg {
+    align-items: center;
+}
+
+div.video {
+    display: flex;
+    justify-content: center;
+}

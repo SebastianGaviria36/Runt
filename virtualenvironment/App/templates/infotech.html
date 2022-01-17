@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Detalles técnicos</title>
+{% endblock %}
+
+{% block body %}
+
+<main>
+    <div class="p-5 mb-4 bg-light rounded-3" id="us" style="background-color: white !important;">
+        <div class="container-fluid py-5" id="ustwo">
+            <h1 class="display-5 fw-bold">Mira los detalles técnicos</h1>
+        </div>
+        <hr>
+    </div>
+    <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel"
+        style="padding-top: 10%;">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="5000">
+                <div class="text-center">
+                    <h1 class="display-5 fw-bold">Repositorio de GitHub</h1>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-9" style="padding-top: 5rem;">
+                            <p class="lead mb-4 fs-3">
+                                Si quieres ver el código con el que fue desplegada esta aplicación
+                                y todo lo que hay detrás de ella como la construcción de los datos,
+                                los modelos, la estadística descriptiva, entre otros, te invitamos
+                                a que visites el repositorio del proyecto. Da click al logo para más información.
+                            </p>
+                        </div>
+                        <div class="col-sm">
+                            <a href="https://github.com/SebastianGaviria36/Runt" target="_blank">
+                                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                                    style="border-radius: 50%; width: 100%;">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="5000">
+                <div class="text-center">
+                    <h1 class="display-5 fw-bold">Informe técnico</h1>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-9" style="padding-top: 5rem;">
+                            <p class="lead mb-4 fs-3">
+                                Si te pica la curiosidad por enterarte de toda la estadística que hubo
+                                de por medio para llegar a nuestro modelo final, anímate, te invitamos a
+                                leer el informe técnico. Da click al logo para más información.
+                            </p>
+                        </div>
+                        <div class="col-sm">
+                            <a href="/inform" target="_blank">
+                                <img src="https://cdn4.iconfinder.com/data/icons/dotted-charts-rounded/512/xxx014-512.png"
+                                    style="border-radius: 50%; width: 100%;">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
