@@ -1,3 +1,4 @@
+#Script para arreglar las bases de datos (no necesario)
 import pandas as pd
 from dateutil.parser import parse
 import numpy as np
