@@ -39,7 +39,7 @@ de la siguiente manera en el caso de entrenamiento y validación.
 |    Fecha   |  Valor |   Clase  |   Dia  | Semana |   Mes  |   Ano  | DiaString |
 |:----------:|:------:|:--------:|:------:|:------:|:------:|:------:|:---------:|
 | 2012-01-01 |    0   |   Real   |    1   |    1   |    1   |  2017  |  Domingo  |
-|   $\vdots$   | $\vdots$ |  $\vdots$  | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ |   $\vdots$  |
+|   .   | . |  .  | . | . | . | . |   .  |
 | 2016-12-31 |   527  | Predicho |   31   |   53   |   12   |  2016  |   Sábado  |
 
 Para añadir prediciones es necesario una base de datos estructurada
@@ -47,7 +47,7 @@ de la siguiente manera en el caso de los pronósticos a futuro del modelo.
 |    Fecha   |  Valor |   Clase  |   Dia  | Semana |   Mes  |   Ano  | DiaString |
 |:----------:|:------:|:--------:|:------:|:------:|:------:|:------:|:---------:|
 | 2018-01-01 |    0   |   Real   |    1   |    1   |    1   |  2018  |  Lunes  |
-|   $\vdots$   | $\vdots$ |  $\vdots$  | $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ |   $\vdots$  |
+|   .   | . |  .  | . | . | . | . |   .  |
 
 
 <b>Nota</b>: para el argumento paths en la función plot se recomienda usar la librería os de 
