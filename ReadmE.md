@@ -4,34 +4,32 @@ Desarrollo de la app que permite la visualización de las predicciones del model
 
 ## <b>Instrucciones</b>
  
-Para ejecutar la appliación es necesario tener las siguientes dependencias:
-<ul>
-<li> <a src="https://flask.palletsprojects.com/en/2.0.x/">Flask</a> 
-<li> <a src="https://plotly.com/">plotly</a>
-<li> <a src="https://pandas.pydata.org/">pandas</a>
-<li> <a src="https://numpy.org/">numpy</a>
-<li> <a src="https://flask-session.readthedocs.io/en/latest/">flask-session</a>
-</ul>
+Para ejecutar la apliación es necesario tener las siguientes dependencias:
+
+- [Flask](https://flask.palletsprojects.com/en/2.0.x/)
+-  [plotly](https://plotly.com/)
+-  [pandas](https://pandas.pydata.org/)
+-  [numpy](https://numpy.org/)
+- [flask-session](https://flask-session.readthedocs.io/en/latest/)
+- [gunicorn](https://gunicorn.org/)
 
 En cada enlace se encuentran instrucciones de instalación de los
 respectivos paquetes, los cuales pueden ser instalados dentro de pip.
 
 ## <b> Directorios relevantes</b>
 
-<ul>
-<li> <a src="https://github.com/SebastianGaviria36/Runt/tree/App/virtualenvironment">virtualenviroment</a>: carpeta con todo el proyecto de la app.
-<ul> 
-<li> <b>wsgi.py</b>: archivo donde se ejecuta la app hecha en flask.    
-</ul>
-<li> <a src="https://github.com/SebastianGaviria36/Runt/tree/App/virtualenvironment/App">App</a>: carpeta con los ejecutables
+
+- [virtualenviroment](https://github.com/SebastianGaviria36/Runt/tree/App/virtualenvironment): carpeta con todo el proyecto de la app.
+    - <b>wsgi.py</b>: archivo donde se ejecuta la app hecha en flask.    
+
+- [App](https://github.com/SebastianGaviria36/Runt/tree/App/virtualenvironment/App): carpeta con los ejecutables
 de la app. 
-<ul> 
-<li> <b>app.py</b>: archivo donde se encuentra la app hecha en flask.  
-<li> <b>render.py</b>: archivo donde se encuentra la función para generar los gráficos.  
-</ul>
-<li> <a src="https://github.com/SebastianGaviria36/Runt/tree/App/virtualenvironment/App/templates">templates</a>: carpeta donde
-se encuentran los archivos html de la página, escritos con <a src="https://jinja2docs.readthedocs.io/en/stable/">Jinja2</a>
-</ul>
+ 
+    - <b>app.py</b>: archivo donde se encuentra la app hecha en flask.  
+    - <b>render.py</b>: archivo donde se encuentra la función para generar los gráficos.  
+
+- [templates](https://github.com/SebastianGaviria36/Runt/tree/App/virtualenvironment/App/templates): carpeta donde
+se encuentran los archivos html de la página, escritos con [Jinja2](https://jinja2docs.readthedocs.io/en/stable/).
 
 Para añadir prediciones es necesario una base de datos estructurada
 de la siguiente manera en el caso de entrenamiento y validación.
