@@ -4,7 +4,7 @@ Desarrollo de la app que permite la visualización de las predicciones del model
 
 ## <b>Instrucciones</b>
  
-Para ejecutar la apliación es necesario tener las siguientes dependencias:
+Para ejecutar la aplicación es necesario tener las siguientes dependencias:
 
 - [Flask](https://flask.palletsprojects.com/en/2.0.x/)
 -  [plotly](https://plotly.com/)
@@ -14,7 +14,7 @@ Para ejecutar la apliación es necesario tener las siguientes dependencias:
 - [gunicorn](https://gunicorn.org/)
 
 En cada enlace se encuentran instrucciones de instalación de los
-respectivos paquetes, los cuales pueden ser instalados dentro de pip.
+respectivos paquetes, los cuales pueden ser instalados a través de pip.
 
 ## <b> Directorios relevantes</b>
 
