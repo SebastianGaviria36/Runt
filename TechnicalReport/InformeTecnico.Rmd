@@ -1,0 +1,252 @@
+---
+title: "Informe Técnico"
+author: 
+  - "Juan José Galeano Arenas"
+  - "Simón Pedro Galeano Muñoz"
+  - "Sebastian Gaviria Sanchez"
+  - "Verónica Ríos Vargas"
+output: 
+  html_document:
+    toc: true
+    theme: united
+    css: fontsize.css 
+bibliography: citas.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, fig.align = "center")
+library(knitr)
+library(tidyverse)
+library(magrittr)
+library(lubridate)
+library(forecast)
+library(rjson)
+library(plotly)
+```
+
+En este informe se muestra el proceso de creación de variables para la
+construcción del modelo así como hallazgos encontrados para el proceso de
+modelación.
+
+# Construcción de la base de datos
+
+La base de datos originalmente contaba con dos variables, fecha y unidades 
+(la cual es la variable respuesta). Esta base estaba limpia pues no se
+encontraron incongruencias, valores faltantes, entre otros.
+
+## Creación de variables
+
+### Variables categóricas
+
+Inicialmente se usó la fecha para crear las variables día, mes, año y semana.
+Para dicho propósito se usaron las funciones `wday()`, `month`, `year()`, y
+`week()` de la librería `lubridate`. Dichas funciones fueron aplicadas a la
+variable fecha, la cual fue transformada previamente en un objeto de la clase
+date con la función `as.Date()` del paquete `base` de R. Por último se
+consideró la variable festivos la cual se construyó gracias a un repositorio
+de GitHub [@RepoNequi] donde se encontró un módulo node.js el cual a través 
+de JavaScript se pudo exportar a un objeto JSON, luego se usó la función
+`fromJSON()` de la librería `rjson` para poder trabajar con JavaScript 
+Objects Notation (JSON) en R y así extraer los datos de los días festivos en
+Colombia.
+
+### Variables numéricas
+
+En este caso se consideraron variables numéricas las cuales tienen que ver 
+con el cambio económico del país a lo largo de los años puesto que el aumento
+o decremento de estas podría afectar el poder adquisitivo de los ciudadanos.
+Dichas variables fueron: PIB anual, PIB persona [@PIB], tasa de cambio
+representativo del mercado del dolar (TRM) [@TRM], salario mínimo
+[@SalMinimo], índice de precios al consumidor (IPC) e inflación mensual
+[@IPC]. Todas estas variables fueron tomadas de internet en páginas
+gubernamentales y luego fueron agregadas a la base de datos gracias a 
+diversas funciones de la librería `dplyr` como `inner_join()`, `mutate()`,
+`filter()`, `select()`, entre otras.
+
+```{r objetos edaed, warning=FALSE}
+#Invocando datos y plots del archivo Edaed.R
+source("Edaed.R", encoding = "UTF-8")
+kable(head(datos), longtable = T, align = "c",
+      col.names = c("Fecha", "Unidades", "Día", "Mes", "Año", "Semana",
+                    "Festivo", "PIB anual", "PIB persona", "TRM",
+                    "Salario mínimo", "IPC", "Inflación mensual"))
+```
+
+# Análisis descriptivo
+
+En esta sección se presentan diversos gráficos para detectar posibles
+relaciones entre las covariables y la respuesta.
+
+### Distribución del número global de vehículos registrados en los distintos días de la semana
+
+```{r unidades-dia-semana-global, fig.cap="Unidades registradas en cada día de la semana (global)"}
+p1
+```
+
+En este gráfico se logra apreciar una clara discrepancia entre el número de
+vehículos registrados en los diferentes días de la semana siendo sábado aquel
+día en el que, objetivamente, menos registros se presentan. La escasez de
+registros del domingo es debida a que "no se registran vehículos" en este 
+día, sin embargo no debería tener observaciones; la frecuencia no nula del
+mismo se podría deber a retrasos en los sistemas informáticos o demás
+anomalías en el horario laboral.
+
+### Distribución del número de vehiculos registrados en los distintos días de la semana discriminando por año
+
+El análisis previo se desarrolló de manera global, sin embargo, surge la duda
+de si dicho comportamiento cambia en los distintos años o se mantiene igual.
+
+```{r discrimina-ano, fig.cap="Unidades registradas en cada día de la semana (anual)"}
+p2
+```
+Observe que el número de registros por día se distribuye de forma similar a 
+lo largo de los años, también se aprecia que a medida que avanzan los años el
+número de registros es menor lo cual sugiere que existen fenómenos que han
+afectado el poder adquisitivo de las personas.
+
+### Correlación lineal entre variables numéricas
+
+La correlación lineal interesa por dos principales razones:
+
+* Observar si un modelo lineal es útil para predecir el número de vehículos
+registrados un día particular.
+* Evitar potenciales problemas de multicolinealidad producido por covariables
+que estén muy correlacionadas.
+
+```{r corr-matrix, fig.cap="Correlación lineal entre variables numéricas"}
+p4
+```
+
+Note que la correlación lineal entre la variable respuesta y cada una de las
+covariables es muy baja por lo que un modelo lineal usando los regresores
+crudos puede no ser adecuado. Por otro lado, a excepción de la inflación
+mensual, los predictores están muy correlacionados linealmente y por lo tanto
+pueden provocar potentes problemas de multicolinealidad, luego en caso de usar
+variables numéricas en modelos sensibles a dicho fenómeno se debería
+tomar únicamente una de estas.
+
+### Diagramas de dispersión para Unidades vs regresores
+
+Puesto que las correlaciones lineales son muy bajas, se grafican diagramas de
+dispersión con el propósito de hallar posibles relaciones de otro tipo entre
+el número de registros de vehículos diarios y las variables predictoras
+numéricas.
+
+```{r scatters, fig.cap="Diagramas de dispersión"}
+ggpubr::ggarrange(s1, s2, s3, s4, s5, s6, ncol = 2, nrow = 3)
+```
+
+En ningún caso se logra detectar algún tipo de relación funcional entre las
+covariables y la respuesta lo cual sugiere que estas variables pueden no ser
+útiles para el proceso de modelación.
+
+# Modelación
+
+Para el proceso de modelación se consideran los modelos aditivos generalizados
+para localización, escala y forma [@gamlss] (GAMLSS por sus siglas en inglés).
+Estos modelos constituyen una gran gama de posibilidades para ajustar modelos
+de regresión donde no se cumple el supuesto de normalidad y/o
+homocedasticidad. Los modelos GAMLSS son muy flexibles puesto que permiten
+modelar hasta 4 parámetros de una distribución de probabilidad con diferentes
+funciones de suavizamiento, en general, un modelo gamlss es de la forma:
+
+$$
+\mathbf{Y} \stackrel{\text{iid}}{\sim} \mathcal{D}(\mathbf{\mu, \sigma, \nu,\tau}) \\
+\mathbf{\eta_1} = g_1(\mathbf{\mu}) \\
+\mathbf{\eta_2} = g_2(\mathbf{\sigma}) \\
+\mathbf{\eta_3} = g_3(\mathbf{\nu}) \\
+\mathbf{\eta_4} = g_4(\mathbf{\tau})
+$$
+donde $\mathcal{D}$ es una función densidad de probabilidad cualesquiera,
+$\mathbf{\mu}$ es el parámetro de localización, $\mathbf{\sigma}$ escala
+y $\mathbf{\nu}, \mathbf{\tau}$ son parámetros de forma [@gamlss].
+
+Teniendo en cuenta el análisis descriptivo, se decidió buscar una distribución
+de probabilidad que se ajuste de mejor forma a los datos puesto que la
+densidad empírica de la respuesta no se parece a una distribución normal,
+para este propósito se usa la función `fitDist()` de la librería `gamlss`.
+Dicha función busca en un amplio catálogo de distribuciones y encuentra las
+más adecuadas usando el criterio de información de Akaike generalizado (GAIC),
+esto es:
+
+$$
+\text{GAIC} = -2\hat{l} + k(df)
+$$
+
+Con $\hat{l}$ el valor de log-verosimilitud del modelo en cuestión, $df$ los
+grados de libertad y $k$ un valor escogido para penalizar el exceso de
+parámetros [@manualr]. Por defecto `fitDist()` toma $k=2$ y el GAIC se
+convierte en el AIC convencional. `fitDist()` tiene diversos argumentos, 
+entre ellos se encuentra "type" en el cual se especifica el dominio de las
+distribuciones a usar, para el problema en cuestión se usa la función para 
+que busque distribuciones de tipo conteo debido a la naturaleza del problema
+presentado y se obtienen un total de 30 distribuciones tentativas. 
+
+Las distribuciones con menor AIC fueron binomiales negativas con ceros
+ajustados e inflados respectivamente (ZANBI y ZINBI). En las demás
+distribuciones destacan la geométrica, poisson, poisson con ceros inflados,
+poisson generalizada entre otras, sin embargo el ajuste no fue tan
+satisfactorio como los dos primeros debido a que se encontraron diferencias
+sustanciales entre los AIC.
+
+## Selección del mejor modelo usando cross - validation
+
+Se utilizó la metodología de cross - validation para evaluar diversos modelos
+y encontrar aquel que mejor explique el número de vehículos registrados en un
+día particular sin caer en sobreajuste. Se tomaron los datos del año 2012 -
+2016 como datos de entrenamiento mientras que los datos de 2017 se dejaron
+como conjunto de validación. Inicialmente se probaron modelos con diversas
+combinaciones de variables categóricas y numéricas pero, desafortunadamente,
+las variables numéricas empeoraron el desempeño del modelo en todos los casos
+sin importar la distribución que se estuviera usando, por lo que se decidió 
+no incluirlas en el mismo.
+
+Para finalizar, cabe mencionar que también se ajustó un bosque aleatorio
+(random forest) y una regresión knn, sin embargo dichos modelos tuvieron un
+rendimiento demasiado pobre: el random forest sobreajustó considerablemente
+mientras que la regresión knn obtuvo predicciones muy pobres.
+
+Luego de ajustar los modelos se calcularon los coeficientes de determinación
+$R^2$ tanto en el conjunto de entrenamiento como en el de prueba se
+obtuvieron los siguientes resultados:
+
+```{r coef-determinacion}
+R2_train <- c(0.8377, 0.8369, 0.8464, 0.7751, 0.6844, 0.9567)
+R2_test <- c(0.7417, 0.7425, 0.7189, 0.7164, 0.2696, 0.7344)
+coef_det <- data.frame(R2_train, R2_test, 
+                       Diferencia = abs(R2_train - R2_test))
+rownames(coef_det) <- c("ZANBI", "ZINBI", "ZIP", "GEOM", "KNN", "RF")
+kable(coef_det, longtable = T, align = "c", escape = F,
+      col.names = c("$R_{\\text{train}}^2$", "$R_{\\text{test}}^2$",
+                    "|$R_{\\text{train}}^2 - R_{\\text{test}}^2$|"))
+```
+
+Se destaca los pobres desempeños del random forest (overfitting) y regresión
+knn (underfitting) tal como se mencionó previamente. Por otro lado, el modelo
+GAMLSS usando respuesta poisson inflada en cero aunque no cumple el criterio
+de prueba, su desempeño es destacable. 
+
+Para finalizar, quedan los modelos con respuesta ZANBI, ZINBI y GEOM, note 
+que los dos primeros tienen un desempeño muy similar y se podría escoger
+cualquiera de los dos. Para esta situación se toma el modelo que considera
+respuesta ZINBI debido a que la diferencia entre el $R^2_{\text{train}}$ y
+$R^2_{\text{test}}$ es ligeramente menor respecto al modelo con respuesta
+ZANBI. Finalmente se tiene el modelo con respuesta geométrica, si bien tiene
+un porcentaje de variabilidad explicada menor respecto a los modelos con
+respuesta ZANBI y ZINBI es más consistente debido a que tiene menor variación
+entre el $R^2_{\text{train}}$ y  $R^2_{\text{test}}$.
+
+Dados los resultados de desempeño expuestos anteriormente, y la naturaleza
+del problema en cuestión, se toma finalmente la decisión de usar el modelo
+ajustado teniendo en cuenta una respuesta que se distribuye binomial negativa
+inflada en cero (ZINBI). Esta última se decide apropiada ya que en general, 
+su propósito es modelar variables aleatorias con un recuento importante de
+ceros, además de ser idónea para conteos, el cual es el caso. Adicionalmente,
+otra caracerística de valor para el problema, es que esta distribución 
+también puede ser adecuada para modelar recuentos muy dispersos, propiedad de
+gran provecho para este propósito.
+
+# Bibliografía
+
+
+
